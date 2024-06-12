@@ -1,0 +1,68 @@
+services:
+     
+  node-red:
+    image: nodered/node-red:latest
+    environment:
+      - TZ=Europe/Brussels
+    ports:
+      - "1880:1880"
+    networks:
+      - workshop
+    volumes:
+      - ./nodered/data:/data
+
+  mosquitto:
+    image: eclipse-mosquitto
+    volumes:
+      - ./mosquitto/config/:/mosquitto/config/
+      - ./mosquitto/log/:/mosquitto/log/
+      - ./mosquitto/data/:/mosquitto/data/
+    ports:
+      - 1883:1883
+      - 9001:9001
+    networks:
+      - workshop
+
+
+  mysql:
+    image: mysql:latest
+    ports:
+        - "3306:3306"
+    volumes:
+        - ./mysql/init/init.sql:/docker-entrypoint-initdb.d/init.sql
+        - ./mysql/data:/var/lib/mysql
+    environment:
+        MYSQL_ROOT_USER: root
+        MYSQL_ROOT_PASSWORD: password
+        MYSQL_DATABASE: sensors
+        MYSQL_USER: user
+        MYSQL_PASSWORD: password
+    networks:
+      - workshop
+  
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    ports:
+     - '3000:3000'
+    volumes:
+      - ./grafana/data:/var/lib/grafana
+    networks:
+      - workshop
+
+
+  phpmyadmin:
+    image: phpmyadmin
+    ports:
+      - 8080:80
+    links:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    networks:
+      - workshop
+
+networks:
+  workshop:
