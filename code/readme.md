@@ -55,6 +55,13 @@ msg.topic = "INSERT INTO TemperatureHumidity (time,deviceid,temperature1,humidit
 return msg;
 ```
 
+### insert uit mqtt
+```
+msg.payload = [new Date(msg.payload.datetime), msg.payload.deviceid, msg.payload.temperature, msg.payload.humidity];
+msg.topic = "INSERT INTO TemperatureHumidity (time,deviceid,temperature1,humidity) VALUES (?,?,?,?);"
+return msg;
+```
+
 ### select uit http
 
 ```
