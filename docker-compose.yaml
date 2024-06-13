@@ -1,6 +1,6 @@
 services:
      
-  node-red:
+  nodered:
     image: nodered/node-red:latest
     environment:
       - TZ=Europe/Brussels
